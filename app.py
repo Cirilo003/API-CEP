@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 import requests
 
 app = Flask(__name__)
@@ -19,6 +19,15 @@ def pesquisacep(cep):
     resposta= requests.get(url)
     return resposta.json()
 
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route('/temperatura', methods= ['GET']) 
+def tempo():
+    url = f'https://api.weatherapi.com/v1/current.json?key=c4380707dde242f4b78202712252204&q=Sao Paulo&lang=pt'
+    resposta = requests.get(url)
+    result = resposta.json()
+    
+    temperatura = result['current']['temp_c']
+    umidade = result['current']['humidity']
+
+    return render_template("paginatempo.html",
+    tempo=temperatura, umid=umidade)
 
